@@ -57,7 +57,6 @@ bot.on(/^\/alive$/i, (msg) => {
 });
 
 bot.on('newChatMembers', (msg) => {
-	//console.log(msg)
 
 	if ('username' in msg.new_chat_member) {
 		var nutzername = msg.new_chat_member.username.toString();
@@ -66,7 +65,6 @@ bot.on('newChatMembers', (msg) => {
 	}
 
 
-	console.log(msg)
 	var UserID = msg.new_chat_member.id.toString();
 	var ChatID = msg.chat.id
 	UserIDArray = UserID.split('');
@@ -153,6 +151,10 @@ bot.on('callbackQuery', (msg) => {
 					console.log("Failed")
 				}
 			}
+			if(config.rest === UserIDArray[UserIDArray.length-1])
+			{
+				console.log("Failed")
+			}
 
 		}else{
 			bot.answerCallbackQuery(msg.id,{
@@ -165,10 +167,10 @@ bot.on('callbackQuery', (msg) => {
 
 	if(data[0] === 'Ban')
 	{
-		bot.answerCallbackQuery(msg.id);
 
 		if(UserIDArray[UserIDArray.length-1] === config.rest){
 			if(data[1] === userID){
+				bot.answerCallbackQuery(msg.id);
 				bot.deleteMessage(chatId,messageId);
 				bot.restrictChatMember(chatId, userID, {canSendMessages: true, canSendMediaMessages: true, cansendpolls: true, canSendOtherMessages: true, canAddWebPagePreviews: true})
 			}
@@ -178,8 +180,8 @@ bot.on('callbackQuery', (msg) => {
 				for(i in Admins){
 					AdminArray.push(Admins[i].user.id)
 				}
-				//console.log(AdminArray)
 				if(AdminArray.includes(msg.from.id)){
+					bot.answerCallbackQuery(msg.id);
 					bot.kickChatMember(chatId, data[1])
 					bot.deleteMessage(chatId,messageId);
 				}else{
