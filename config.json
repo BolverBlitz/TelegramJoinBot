@@ -1,0 +1,13 @@
+{
+	"botname":"JoinProtection",
+	"version":"1.0",
+	"simple":"0",
+	"links":"1,4,7",
+	"mitte":"2,5,8",
+	"rechts":"3,6,9",
+	"language":"de",
+	"LogChat":"1001211106939",
+	"isSuperAdmin":"206921999",
+	"WTdelmsgshort":"5400",
+	"WTdelmsglong":"15400"
+}
