@@ -119,7 +119,7 @@ bot.on('callbackQuery', (msg) => {
 	
 	if(data[0] === 'K')
 	{
-		if(data[2] === UserID){
+		if(data[2] === userID){
 
 			bot.answerCallbackQuery(msg.id);
 
@@ -174,7 +174,12 @@ bot.on('callbackQuery', (msg) => {
 			}
 		}else{
 			bot.getChatAdministrators(chatId).then(function(Admins) {
-				if(Admins.includes(msg.from.id)){
+				AdminArray = [];
+				for(i in Admins){
+					AdminArray.push(Admins[i].user.id)
+				}
+				//console.log(AdminArray)
+				if(AdminArray.includes(msg.from.id)){
 					bot.kickChatMember(chatId, data[1])
 					bot.deleteMessage(chatId,messageId);
 				}else{
