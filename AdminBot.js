@@ -167,9 +167,11 @@ bot.on('callbackQuery', (msg) => {
 	{
 		bot.answerCallbackQuery(msg.id);
 
-		if(data[1] === userID){
-			bot.deleteMessage(chatId,messageId);
-			bot.restrictChatMember(chatId, userID, {canSendMessages: true, canSendMediaMessages: true, cansendpolls: true, canSendOtherMessages: true, canAddWebPagePreviews: true})
+		if(UserIDArray[UserIDArray.length-1] === config.rest){
+			if(data[1] === userID){
+				bot.deleteMessage(chatId,messageId);
+				bot.restrictChatMember(chatId, userID, {canSendMessages: true, canSendMediaMessages: true, cansendpolls: true, canSendOtherMessages: true, canAddWebPagePreviews: true})
+			}
 		}else{
 			bot.getChatAdministrators(chatId).then(function(Admins) {
 				if(Admins.includes(msg.from.id)){
