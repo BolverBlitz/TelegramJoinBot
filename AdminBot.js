@@ -9,7 +9,7 @@ const OS = require('./src/Hardware');
 //Include some modules
 
 const newI18n = require("new-i18n");
-const i18n = newI18n(__dirname + "/languages", ["de"]);
+const i18n = newI18n(__dirname + "/languages", ["de"], "de");
 
 //Include complex modules
 const Telebot = require('telebot');
@@ -95,10 +95,10 @@ bot.on('newChatMembers', (msg) => {
 			bot.inlineButton('2', {callback: 'K_zwei_'+ UserID}),
 			bot.inlineButton('3', {callback: 'K_drei_'+ UserID})
 		], [
-			bot.inlineButton(i18n(i18n.languages[config.language], "Sofortban"), {callback: 'Ban_' + UserID})
+			bot.inlineButton(i18n(config.language, "BanKnopf"), {callback: 'Ban_' + UserID})
 		]
 	]);
-	bot.sendMessage(ChatID, MSG, {parseMode: 'markdown', replyMarkup});
+	bot.sendMessage(ChatID, MSG, {parseMode: 'markdown', replyMarkup}).catch(error => console.log('Error:', error));
 });
 
 
