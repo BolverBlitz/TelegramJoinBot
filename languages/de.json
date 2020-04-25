@@ -1,12 +1,12 @@
 {
 	"L1": "Klicke auf den linken Knopf in der ersten Reihe!",
-	"12": "Klicke auf die 1",
+	"L2": "Klicke auf die 1",
 	"M1": "Klicke auf den mittleren Knopf in der ersten Reihe!",
 	"M2": "Klicke auf die 2",
 	"R1": "Klicke auf den rechten Knopf in der ersten Reihe!",
 	"R2": "Klicke auf die 3",
-	"S": "Klicke auf Sofortban, kein Witz.",
-	"BanKnopf":"Sofortban",
+	"S": "Klicke auf Sofortbannn, kein Witz.",
+	"BanKnopf":"Sofortbannn",
 	"Willkommen":"Willkommen im Chat, {{Nutzername}}",
 	"NichtBenutzer":"Das ist nicht dein Knopf!"
 }
