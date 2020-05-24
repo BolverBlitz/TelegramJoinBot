@@ -91,11 +91,11 @@ bot.on('newChatMembers', (msg) => {
 
 	let replyMarkup = bot.inlineKeyboard([
 		[
-			bot.inlineButton('1', {callback: 'K_eins_'+ UserID}),
-			bot.inlineButton('2', {callback: 'K_zwei_'+ UserID}),
-			bot.inlineButton('3', {callback: 'K_drei_'+ UserID})
+			bot.inlineButton('1', {callback: 'K_eins_'+ UserID + '_' + nutzername}),
+			bot.inlineButton('2', {callback: 'K_zwei_'+ UserID + '_' + nutzername}),
+			bot.inlineButton('3', {callback: 'K_drei_'+ UserID + '_' + nutzername})
 		], [
-			bot.inlineButton(i18n(config.language, "BanKnopf"), {callback: 'Ban_' + UserID})
+			bot.inlineButton(i18n(config.language, "BanKnopf"), {callback: 'Ban_' + UserID + '_' + nutzername})
 		]
 	]);
 	bot.sendMessage(ChatID, MSG, {parseMode: 'markdown', replyMarkup}).catch(error => console.log('Error:', error));
@@ -125,7 +125,11 @@ bot.on('callbackQuery', (msg) => {
 			{
 				if(data[1] === 'eins')
 				{
-					bot.deleteMessage(chatId,messageId);
+					bot.editMessageText(
+            					{chatId, messageId}, i18n(config.language, "Willkommen", { Nutzername: data[3] }),
+            					{parseMode: 'markdown'}
+        				).catch(error => console.log('Error:', error));
+					
 					bot.restrictChatMember(chatId, userID, {canSendMessages: true, canSendMediaMessages: true, cansendpolls: true, canSendOtherMessages: true, canAddWebPagePreviews: true})
 				}else{
 					console.log("Failed")
@@ -135,7 +139,11 @@ bot.on('callbackQuery', (msg) => {
 			{
 				if(data[1] === 'zwei')
 				{
-					bot.deleteMessage(chatId,messageId);
+					bot.editMessageText(
+            					{chatId, messageId}, i18n(config.language, "Willkommen", { Nutzername: data[3] }),
+            					{parseMode: 'markdown'}
+        				).catch(error => console.log('Error:', error));
+					
 					bot.restrictChatMember(chatId, userID, {canSendMessages: true, canSendMediaMessages: true, cansendpolls: true, canSendOtherMessages: true, canAddWebPagePreviews: true})
 				}else{
 					console.log("Failed")
@@ -145,7 +153,11 @@ bot.on('callbackQuery', (msg) => {
 			{
 				if(data[1] === 'drei')
 				{
-					bot.deleteMessage(chatId,messageId);
+					bot.editMessageText(
+            					{chatId, messageId}, i18n(config.language, "Willkommen", { Nutzername: data[3] }),
+            					{parseMode: 'markdown'}
+        				).catch(error => console.log('Error:', error));
+					
 					bot.restrictChatMember(chatId, userID, {canSendMessages: true, canSendMediaMessages: true, cansendpolls: true, canSendOtherMessages: true, canAddWebPagePreviews: true})
 				}else{
 					console.log("Failed")
@@ -171,7 +183,11 @@ bot.on('callbackQuery', (msg) => {
 		if(UserIDArray[UserIDArray.length-1] === config.rest){
 			if(data[1] === userID){
 				bot.answerCallbackQuery(msg.id);
-				bot.deleteMessage(chatId,messageId);
+				bot.editMessageText(
+            				{chatId, messageId}, i18n(config.language, "Willkommen", { Nutzername: data[2] }),
+            				{parseMode: 'markdown'}
+        			).catch(error => console.log('Error:', error));
+					
 				bot.restrictChatMember(chatId, userID, {canSendMessages: true, canSendMediaMessages: true, cansendpolls: true, canSendOtherMessages: true, canAddWebPagePreviews: true})
 			}
 		}else{
