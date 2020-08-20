@@ -1,6 +1,6 @@
 {
-    "0":"API Name|API URL",
-    "1":"API Name|API URL",
-    "2":"API Name|API URL",
+    "0":"Spamwatch|https://api.spamwat.ch",
+    "1":"EBGWatch|https://api.geozukunft.at/",
+    "2":"BolverWatch|https://spamapi.bolverblitz.net/",
     "length":"3"
 }
