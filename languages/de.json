@@ -8,5 +8,10 @@
 	"S": "Klicke auf Sofortbannn, kein Witz.",
 	"BanKnopf":"Sofortbannn",
 	"Willkommen":"Willkommen im Chat, {{Nutzername}}",
-	"NichtBenutzer":"Das ist nicht dein Knopf!"
+	"WillkommenNachBan":"Willkommen zurück im Chat, {{Nutzername}}.\nDa du bereits gemutet bist, darfst du dich nicht freischalten.",
+	"WillkommenError":"Willkommen im Chat, {{Nutzername}}.\nLeider habe ich keine Rechte um dich zu Muten...",
+	"NichtBenutzer":"Das ist nicht dein Knopf!",
+	"AntispamBan":"Willkommen im Chat, {{Nutzername}}.\nDa du in minderstens einer Antispam Gruppe gebannt bist darfst du dich nicht selbst freischalten.\n",
+	"AntiSpamCheck":"Antispam Status für {{Nutzername}}\n{{Spamwatch}} Spamwatch\n{{EBGWatch}} EBGWatch\n{{BolverWatch}} BolverWatch\n{{CAS}} CAS Ban\n",
+	"NichtGenugRechte":"Das darfst du nicht!"
 }
