@@ -639,6 +639,9 @@ bot.on('inlineQuery', msg => {
 				};
 				SafeUsername = SafeUsername.trim()
 				SafeUsername = SafeUsername.replace("_","-")
+				if(SafeUsername.length >= 22){
+					SafeUsername = queryBetaArr[1]
+				}
 				let replyMarkup = bot.inlineKeyboard([
 					[
 						bot.inlineButton('Ban', {callback: `gban_ban_${msg.from.id}_${queryBetaArr[1]}_${SafeUsername}`}),
@@ -677,6 +680,9 @@ bot.on('inlineQuery', msg => {
 				};
 				SafeUsername = SafeUsername.trim()
 				SafeUsername = SafeUsername.replace("_","-")
+				if(SafeUsername.length >= 22){
+					SafeUsername = queryBetaArr[1]
+				}
 				let replyMarkup = bot.inlineKeyboard([
 					[
 						bot.inlineButton('Get', {callback: `token_get_${msg.from.id}_${queryBetaArr[1]}_${SafeUsername}`}),
