@@ -79,7 +79,11 @@ bot.on(/^\/check$/i, (msg) => {
 		let BanMSGState = "";
 		PAll.map(bool => {
 			if(bool.state === true){
-				BanMSGState += `\nReason ${bool.antispam}: ${bool.reason}`
+				if(bool.reason.startsWith("0x")){
+					BanMSGState += `\nReason ${bool.antispam}: ${ReasonsListFlip[bool.reason]}` //Flip back to human readable reason
+				}else{
+					BanMSGState += `\nReason ${bool.antispam}: ${bool.reason}`
+				}
 			}
 		});
 		bot.sendMessage(msg.chat.id, i18n(config.language, "AntiSpamCheck", { Nutzername: username, Spamwatch: f.ConvertBoolToEmoji(PAll[0].state), EBGWatch: f.ConvertBoolToEmoji(PAll[1].state), BolverWatch: f.ConvertBoolToEmoji(PAll[2].state), CAS:f.ConvertBoolToEmoji(PAll[3].state) }) + BanMSGState, {webPreview: false})
@@ -178,6 +182,7 @@ bot.on('newChatMembers', (msg) => {
 //Strukture
 //Funktion_UnterFunktion_UserID_Parameter
 bot.on('callbackQuery', (msg) => {
+	//console.log(msg.data)
 	if ('inline_message_id' in msg) {
 		var inlineId = msg.inline_message_id;
 	}else{
@@ -350,16 +355,11 @@ bot.on('callbackQuery', (msg) => {
 					let BanMSGState = "";
 					PAll.map(bool => {
 						if(bool.state === true){
-							if(typeof(bool.state) === "string"){
-								console.log("BoolReason: ", bool.reason)
 								if(bool.reason.startsWith("0x")){
 									BanMSGState += `\nReason ${bool.antispam}: ${ReasonsListFlip[bool.reason]}` //Flip back to human readable reason
 								}else{
 									BanMSGState += `\nReason ${bool.antispam}: ${bool.reason}`
 								}
-							}else{
-								BanMSGState += `\nReason ${bool.antispam}: ${bool.reason}`
-							}
 						}
 					});
 					
@@ -387,25 +387,47 @@ bot.on('callbackQuery', (msg) => {
 			if(data[1] === 'reason')
 			{
 				let ReasonPos5 = data[5]
-
-				let replyMarkup = bot.inlineKeyboard([
-					[
-						bot.inlineButton('Back', {callback: `menu_gban_${data[2]}_${data[3]}_${data[4]}`})
-					]
-				]);
-
-				let MSG = `${data[4]}(${data[3]}) was banned in BolverWatch for ${data[5]} ${ReasonsList[ReasonPos5]}`
 				SW.addBan(data[3], 2, ReasonsList[ReasonPos5]).then(function(addBan){
-					if ('inline_message_id' in msg) {
-						bot.editMessageText(
-							{inlineMsgId: inlineId}, MSG,
-							{parseMode: 'markdown', webPreview: false, replyMarkup}
-						).catch(error => console.log('Error:', error));
+					if(addBan.status === true){
+						let MSG = `${data[4]}(${data[3]}) was banned in BolverWatch for ${data[5]} ${ReasonsList[ReasonPos5]}`
+
+						let replyMarkup = bot.inlineKeyboard([
+							[
+								bot.inlineButton('Back', {callback: `menu_gban_${data[2]}_${data[3]}_${data[4]}`})
+							]
+						]);
+
+						if ('inline_message_id' in msg) {
+							bot.editMessageText(
+								{inlineMsgId: inlineId}, MSG,
+								{parseMode: 'markdown', webPreview: false, replyMarkup}
+							).catch(error => console.log('Error:', error));
+						}else{
+							bot.editMessageText(
+								{chatId: chatId, messageId: messageId}, MSG,
+								{parseMode: 'markdown', webPreview: false, replyMarkup}
+							).catch(error => console.log('Error:', error));
+						}
 					}else{
-						bot.editMessageText(
-							{chatId: chatId, messageId: messageId}, MSG,
-							{parseMode: 'markdown', webPreview: false, replyMarkup}
-						).catch(error => console.log('Error:', error));
+						let replyMarkup = bot.inlineKeyboard([
+							[
+								bot.inlineButton('Back', {callback: `menu_gban_${data[2]}_${data[3]}_${data[4]}`})
+							]
+						]);
+		
+						let MSG = `FAILED! ${addBan.text}`
+
+						if ('inline_message_id' in msg) {
+							bot.editMessageText(
+								{inlineMsgId: inlineId}, MSG,
+								{parseMode: 'markdown', webPreview: false, replyMarkup}
+							).catch(error => console.log('Error:', error));
+						}else{
+							bot.editMessageText(
+								{chatId: chatId, messageId: messageId}, MSG,
+								{parseMode: 'markdown', webPreview: false, replyMarkup}
+							).catch(error => console.log('Error:', error));
+						}
 					}
 				});
 			}
@@ -504,24 +526,46 @@ bot.on('callbackQuery', (msg) => {
 			if(data[1] === 'perm')
 			{
 				SW.createToken(data[3], data[5], 2).then(function(Tokens){
-					let MSG = `${Tokens.permissions} Token is ready for user ${data[4]}(${Tokens.UserID})\n\nAPI Name: ${Tokens.APIName}\nURL: ${Tokens.APIurl}\n\nGo to @JoinProtectionBot and write /mytokens to get all your tokens`
+					if(Tokens !== null){
+						let MSG = `${Tokens.permissions} Token is ready for user ${data[4]}(${Tokens.UserID})\n\nAPI Name: ${Tokens.APIName}\nURL: ${Tokens.APIurl}\n\nGo to @JoinProtectionBot and write /mytokens to get all your tokens`
 
-					let replyMarkup = bot.inlineKeyboard([
-						[
-							bot.inlineButton('Back', {callback: `menu_token_${data[2]}_${data[3]}_${data[4]}`})
-						]
-					]);
+						let replyMarkup = bot.inlineKeyboard([
+							[
+								bot.inlineButton('Back', {callback: `menu_token_${data[2]}_${data[3]}_${data[4]}`})
+							]
+						]);
 
-					if ('inline_message_id' in msg) {
-						bot.editMessageText(
-							{inlineMsgId: inlineId}, MSG,
-							{parseMode: 'markdown', webPreview: false, replyMarkup}
-						).catch(error => console.log('Error:', error));
+						if ('inline_message_id' in msg) {
+							bot.editMessageText(
+								{inlineMsgId: inlineId}, MSG,
+								{parseMode: 'markdown', webPreview: false, replyMarkup}
+							).catch(error => console.log('Error:', error));
+						}else{
+							bot.editMessageText(
+								{chatId: chatId, messageId: messageId}, MSG,
+								{parseMode: 'markdown', webPreview: false, replyMarkup}
+							).catch(error => console.log('Error:', error));
+						}
 					}else{
-						bot.editMessageText(
-							{chatId: chatId, messageId: messageId}, MSG,
-							{parseMode: 'markdown', webPreview: false, replyMarkup}
-						).catch(error => console.log('Error:', error));
+						let MSG = `FAILED! Check Logs!`
+
+						let replyMarkup = bot.inlineKeyboard([
+							[
+								bot.inlineButton('Back', {callback: `menu_token_${data[2]}_${data[3]}_${data[4]}`})
+							]
+						]);
+
+						if ('inline_message_id' in msg) {
+							bot.editMessageText(
+								{inlineMsgId: inlineId}, MSG,
+								{parseMode: 'markdown', webPreview: false, replyMarkup}
+							).catch(error => console.log('Error:', error));
+						}else{
+							bot.editMessageText(
+								{chatId: chatId, messageId: messageId}, MSG,
+								{parseMode: 'markdown', webPreview: false, replyMarkup}
+							).catch(error => console.log('Error:', error));
+						}
 					}
 				});
 			}
@@ -639,9 +683,6 @@ bot.on('inlineQuery', msg => {
 				};
 				SafeUsername = SafeUsername.trim()
 				SafeUsername = SafeUsername.replace("_","-")
-				if(SafeUsername.length >= 22){
-					SafeUsername = queryBetaArr[1]
-				}
 				let replyMarkup = bot.inlineKeyboard([
 					[
 						bot.inlineButton('Ban', {callback: `gban_ban_${msg.from.id}_${queryBetaArr[1]}_${SafeUsername}`}),
@@ -680,9 +721,6 @@ bot.on('inlineQuery', msg => {
 				};
 				SafeUsername = SafeUsername.trim()
 				SafeUsername = SafeUsername.replace("_","-")
-				if(SafeUsername.length >= 22){
-					SafeUsername = queryBetaArr[1]
-				}
 				let replyMarkup = bot.inlineKeyboard([
 					[
 						bot.inlineButton('Get', {callback: `token_get_${msg.from.id}_${queryBetaArr[1]}_${SafeUsername}`}),
@@ -822,3 +860,7 @@ bot.on(/^\/mytokens/i, (msg) => {
 		msg.reply.text("ONLY DO THIS IN PRIVAT CHAT WITH THE BOT!");
 	}
 });
+
+setInterval(function(){
+	SW.Cache()
+}, 301000);

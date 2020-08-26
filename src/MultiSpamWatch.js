@@ -20,7 +20,7 @@ async function Cache(){
         //console.log(secret[loken], url)
         let obj = {
             API_Name: AntispamName,
-            IDList: await SpamWatch.getBansMin().catch(error => console.log(error)),
+            IDList: await SpamWatch.getBansMin().catch(function(error) {if(error.status === 429){console.log(`[bot.Spamwatch] Ratelimit for API: ${AntispamName}`)}else{console.log(error)}}),
             Self: await SpamWatch.getSelf().catch(error => console.log(error))
         }
         BanCache.push(obj)
@@ -95,20 +95,23 @@ let getBan = async function(UserID, API_ID, cache) {
  * @param {String} message
  * @returns {Object|Integer} Promise
  */
-let addBan = async function(UserID, API_ID, reason, message) {
-    if(!reason){reason = "0x00"}
-    if(!message){message = "Not needed"}
-    let SplitString = SpamWatchAPIList[`${API_ID}`].split("|");
-    let AntispamName = SplitString[0]
-    let url = SplitString[1]
-    let Token = `spamwatch${API_ID}`
-    if(Admin.includes(BanCache[API_ID].Self.permission)){
-        let SpamWatch = new SpamWatchAPI.Client(secret[Token], url);
-        SpamWatch.addBan(parseInt(UserID), reason, message)
-        return true;
-    }else{
-        return 403;
-    }
+let addBan = function(UserID, API_ID, reason, message) {
+    return new Promise(function(resolve, reject) {
+        if(!reason){reason = "0x00"}
+        if(!message){message = "Not needed"}
+        let SplitString = SpamWatchAPIList[`${API_ID}`].split("|");
+        let AntispamName = SplitString[0]
+        let url = SplitString[1]
+        let Token = `spamwatch${API_ID}`
+        if(Admin.includes(BanCache[API_ID].Self.permission)){
+            let SpamWatch = new SpamWatchAPI.Client(secret[Token], url);
+            SpamWatch.addBan(parseInt(UserID), reason, message).then(function(){
+                resolve({status: true});
+            }).catch(function(error) {if(error.status === 400){console.log(`[bot.Spamwatch] Missing info in Request: ${AntispamName}`); let out = {status: false, text: `Bad request ${error.status}`}; resolve(out);}else{console.log(error)}})
+        }else{
+            resolve(403);
+        }
+    });
 }
 
 /**
@@ -151,6 +154,9 @@ let createToken = async function(UserID, perm, API_ID) {
             permissions: perm,
             APIName: AntispamName,
             APIurl: url
+        }
+        if(result.token === null){
+            return null
         }
         return result;
     }else{
