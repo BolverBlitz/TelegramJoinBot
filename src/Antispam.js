@@ -1,7 +1,15 @@
-var config = require("../config");
-var secret = require("../secret");
+const config = require("../config");
+const secret = require("../secret");
 const request = require('request');
+const os = require('os');
+const plockjson = require('../package-lock.json');
+const pjson = require('../package.json')
 
+var customHeaderRequest = request.defaults({
+    headers: {'User-Agent': `NodeJS/${process.version} Module: request/${plockjson.dependencies.request.version} (${os.type()} ${os.release()} ${os.platform()}) | Process:${pjson.name}/${pjson.version}`}
+})
+
+//console.log(`NodeJS/${process.version} Module: request/${plockjson.dependencies.request.version} (${os.type()} ${os.release()} ${os.platform()}) | Process:${pjson.name}/${pjson.version}`)
 
 let checkUserCAS = function (UserID) {
     //UserID = 1205278547;
@@ -24,6 +32,32 @@ let checkUserCAS = function (UserID) {
     });
 };
 
+let checkUserspamprotection = function (UserID) {
+    return new Promise(function(resolve, reject) {
+        customHeaderRequest(`https://api.intellivoid.net/spamprotection/v1/lookup?query=${UserID}`, { json: true }, (err, res, body) => {
+            if (err) {
+                throw (err);
+            }else{
+                let Out = {
+                    antispam: "SpamProtection",
+                    state: body.results.attributes.is_potential_spammer,
+                }
+
+                if(body.results.attributes.blacklist_reason === null){
+                    var BlockReason = "AI BAN"
+                }
+
+                if(body.ok !== false){
+                    Out.timestamp = body.last_updated,
+                    Out.reason = BlockReason
+                    }
+                resolve(Out);
+            }
+        });
+    });
+};
+
 module.exports = {
-    checkUserCAS
+    checkUserCAS,
+    checkUserspamprotection
 };

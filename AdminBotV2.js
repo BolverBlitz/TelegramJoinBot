@@ -75,7 +75,7 @@ bot.on(/^\/check$/i, (msg) => {
 		}
 	}
 
-	Promise.all([SW.getBan(UserID, 0),SW.getBan(UserID, 1), SW.getBan(UserID, 2), AntiSpam.checkUserCAS(UserID)]).then(function(PAll) {
+	Promise.all([SW.getBan(UserID, 0),SW.getBan(UserID, 1), SW.getBan(UserID, 2), AntiSpam.checkUserCAS(UserID), AntiSpam.checkUserspamprotection(UserID)]).then(function(PAll) {
 		let BanMSGState = "";
 		PAll.map(bool => {
 			if(bool.state === true){
@@ -86,7 +86,7 @@ bot.on(/^\/check$/i, (msg) => {
 				}
 			}
 		});
-		bot.sendMessage(msg.chat.id, i18n(config.language, "AntiSpamCheck", { Nutzername: username, Spamwatch: f.ConvertBoolToEmoji(PAll[0].state), EBGWatch: f.ConvertBoolToEmoji(PAll[1].state), BolverWatch: f.ConvertBoolToEmoji(PAll[2].state), CAS:f.ConvertBoolToEmoji(PAll[3].state) }) + BanMSGState, {webPreview: false})
+		bot.sendMessage(msg.chat.id, i18n(config.language, "AntiSpamCheck", { Nutzername: username, Spamwatch: f.ConvertBoolToEmoji(PAll[0].state), EBGWatch: f.ConvertBoolToEmoji(PAll[1].state), BolverWatch: f.ConvertBoolToEmoji(PAll[2].state), CAS:f.ConvertBoolToEmoji(PAll[3].state), spamprotection: f.ConvertBoolToEmoji(PAll[4].state)}) + BanMSGState, {webPreview: false})
 	});
 });
 
@@ -116,7 +116,7 @@ bot.on('newChatMembers', (msg) => {
 	var UserID = msg.new_chat_member.id.toString();
 	var ChatID = msg.chat.id
 	UserIDArray = UserID.split('');
-	Promise.all([SW.getBan(UserID, 0),SW.getBan(UserID, 1), SW.getBan(UserID, 2), AntiSpam.checkUserCAS(UserID)]).then(function(PAll) {
+	Promise.all([SW.getBan(UserID, 0),SW.getBan(UserID, 1), SW.getBan(UserID, 2), AntiSpam.checkUserCAS(UserID), AntiSpam.checkUserspamprotection(UserID)]).then(function(PAll) {
 
 		if ('username' in msg.new_chat_member) {
 			var nutzername = msg.new_chat_member.username.toString();
