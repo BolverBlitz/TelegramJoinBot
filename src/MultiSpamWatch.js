@@ -18,15 +18,25 @@ async function Cache(){
         let Token = `spamwatch${i}`
         let SpamWatch = new SpamWatchAPI.Client(secret[Token], url);
         //console.log(secret[loken], url)
+        var IDListTemp = [];
+        var Self;
+        var TSelf;
+        IDListTemp = await SpamWatch.getBansMin().catch(function(error) {if(error.status === 429){console.log(`[bot.Spamwatch] Ratelimit for API: ${AntispamName}`)}else if(error.response.status === 503){console.log(`[bot.Spamwatch] System Offline: ${AntispamName}`)}else{console.log("Test")}})
+        var SSelf = await SpamWatch.getSelf().catch(function(error) {if(error.response.status === 503){console.log(`[bot.Spamwatch] System Offline: ${AntispamName}`);TSelf = {permission: "Offline", token: Token};}else{console.log("Test")}})
+        if(!SSelf){
+            Self = TSelf;
+        }else{
+            Self = SSelf;
+        }
         let obj = {
             API_Name: AntispamName,
-            IDList: await SpamWatch.getBansMin().catch(function(error) {if(error.status === 429){console.log(`[bot.Spamwatch] Ratelimit for API: ${AntispamName}`)}else{console.log(error)}}),
-            Self: await SpamWatch.getSelf().catch(error => console.log(error))
+            IDList: IDListTemp,
+            Self: Self,
         }
         BanCache.push(obj)
-        //console.log(BanCache)
         
     }
+    //console.log(BanCache)
     console.log(`[bot.Spamwatch] Updated`)
 }
 
@@ -58,7 +68,7 @@ let getBan = async function(UserID, API_ID, cache) {
             if(cache === true){
                 if(BanCache[API_ID].IDList.includes(UserID)){
                     let SpamWatch = new SpamWatchAPI.Client(secret[Token], url);
-                    let ban = await SpamWatch.getBan(parseInt(UserID));
+                    let ban = await SpamWatch.getBan(parseInt(UserID)).catch(error => f.Elog('Error: (delMessage)', error.description));;
                     if(ban === false){
                         ban = {state: false, antispam: AntispamName}
                     }else{

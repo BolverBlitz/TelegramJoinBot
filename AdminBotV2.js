@@ -76,8 +76,10 @@ bot.on(/^\/check$/i, (msg) => {
 	}
 
 	Promise.all([SW.getBan(UserID, 0),SW.getBan(UserID, 1), SW.getBan(UserID, 2), AntiSpam.checkUserCAS(UserID), AntiSpam.checkUserspamprotection(UserID)]).then(function(PAll) {
+	//Promise.all([SW.getBan(UserID, 0),SW.getBan(UserID, 1), SW.getBan(UserID, 2), AntiSpam.checkUserCAS(UserID)]).then(function(PAll) {
 		let BanMSGState = "";
 		PAll.map(bool => {
+			console.log(bool)
 			if(bool.state === true){
 				if(bool.reason.startsWith("0x")){
 					BanMSGState += `\nReason ${bool.antispam}: ${ReasonsListFlip[bool.reason]}` //Flip back to human readable reason
@@ -87,6 +89,7 @@ bot.on(/^\/check$/i, (msg) => {
 			}
 		});
 		bot.sendMessage(msg.chat.id, i18n(config.language, "AntiSpamCheck", { Nutzername: username, Spamwatch: f.ConvertBoolToEmoji(PAll[0].state), EBGWatch: f.ConvertBoolToEmoji(PAll[1].state), BolverWatch: f.ConvertBoolToEmoji(PAll[2].state), CAS:f.ConvertBoolToEmoji(PAll[3].state), spamprotection: f.ConvertBoolToEmoji(PAll[4].state)}) + BanMSGState, {webPreview: false})
+		//bot.sendMessage(msg.chat.id, i18n(config.language, "AntiSpamCheck", { Nutzername: username, Spamwatch: f.ConvertBoolToEmoji(PAll[0].state), EBGWatch: f.ConvertBoolToEmoji(PAll[1].state), BolverWatch: f.ConvertBoolToEmoji(PAll[2].state), CAS:f.ConvertBoolToEmoji(PAll[3].state), spamprotection: "OFFLINE"}) + BanMSGState, {webPreview: false})
 	});
 });
 
@@ -116,7 +119,8 @@ bot.on('newChatMembers', (msg) => {
 	var UserID = msg.new_chat_member.id.toString();
 	var ChatID = msg.chat.id
 	UserIDArray = UserID.split('');
-	Promise.all([SW.getBan(UserID, 0),SW.getBan(UserID, 1), SW.getBan(UserID, 2), AntiSpam.checkUserCAS(UserID), AntiSpam.checkUserspamprotection(UserID)]).then(function(PAll) {
+	//Promise.all([SW.getBan(UserID, 0),SW.getBan(UserID, 1), SW.getBan(UserID, 2), AntiSpam.checkUserCAS(UserID), AntiSpam.checkUserspamprotection(UserID)]).then(function(PAll) {
+	Promise.all([SW.getBan(UserID, 0),SW.getBan(UserID, 1), SW.getBan(UserID, 2)]).then(function(PAll) {
 
 		if ('username' in msg.new_chat_member) {
 			var nutzername = msg.new_chat_member.username.toString();
@@ -174,7 +178,7 @@ bot.on('newChatMembers', (msg) => {
 					bot.inlineButton(i18n(config.language, "BanKnopf"), {callback: 'Ban_' + UserID})
 				]
 			]);
-			bot.sendMessage(ChatID, MSG, {parseMode: 'markdown', replyMarkup}).catch(error => f.Elog('Error: (SendJoinMsg)', error.description));
+			bot.sendMessage(ChatID, MSG, {parseMode: 'html', replyMarkup}).catch(error => console.log(error));
 			}
 	}).catch(error => f.Elog('Error: (Antispam)', error.description));
 });
@@ -415,7 +419,7 @@ bot.on('callbackQuery', (msg) => {
 							]
 						]);
 		
-						let MSG = `FAILED! ${addBan.text}`
+						let MSG = `FAILED! System Offline...`
 
 						if ('inline_message_id' in msg) {
 							bot.editMessageText(
@@ -429,7 +433,27 @@ bot.on('callbackQuery', (msg) => {
 							).catch(error => console.log('Error:', error));
 						}
 					}
-				});
+				}).catch(function(error) {
+					let replyMarkup = bot.inlineKeyboard([
+						[
+							bot.inlineButton('Back', {callback: `menu_gban_${data[2]}_${data[3]}_${data[4]}`})
+						]
+					]);
+	
+					let MSG = `FAILED! ${addBan.text}`
+
+					if ('inline_message_id' in msg) {
+						bot.editMessageText(
+							{inlineMsgId: inlineId}, MSG,
+							{parseMode: 'markdown', webPreview: false, replyMarkup}
+						).catch(error => console.log('Error:', error));
+					}else{
+						bot.editMessageText(
+							{chatId: chatId, messageId: messageId}, MSG,
+							{parseMode: 'markdown', webPreview: false, replyMarkup}
+						).catch(error => console.log('Error:', error));
+					}
+				})
 			}
 		}else{
 			bot.answerCallbackQuery(msg.id,{
@@ -680,9 +704,13 @@ bot.on('inlineQuery', msg => {
 				let SafeUsername = "";
 				for(var i = 2; i < queryBetaArr.length;i++){
 					SafeUsername = SafeUsername + queryBetaArr[i] + " ";
+					console.log(SafeUsername)
 				};
 				SafeUsername = SafeUsername.trim()
 				SafeUsername = SafeUsername.replace("_","-")
+				if(SafeUsername.length >= 22){
+					SafeUsername = queryBetaArr[1]
+				}
 				let replyMarkup = bot.inlineKeyboard([
 					[
 						bot.inlineButton('Ban', {callback: `gban_ban_${msg.from.id}_${queryBetaArr[1]}_${SafeUsername}`}),
