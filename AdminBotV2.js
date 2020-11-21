@@ -985,6 +985,24 @@ bot.on(/^\/mytokens/i, (msg) => {
 		msg.reply.text("ONLY DO THIS IN PRIVAT CHAT WITH THE BOT!");
 	}
 });
+bot.on(/^\/gban( .+)*$/i, (msg, props) => {
+	perms.permissions(msg.from.id).then(function(Permissions) {
+		if(Permissions >= permsJson.Admin || msg.from.id === Number(config.isSuperAdmin)){
+			var Para = props.match[1].trim();
+			if(typeof(Para) === 'undefined'){
+				msg.reply.text("You need to specify a new permissions level");
+			}else{
+
+				SW.addBan(msg.reply_to_message.text, 2, Para).then(function(addBan){
+					console.log(addBan)
+					bot.deleteMessage(msg.chat.id, msg.message_id);
+				})
+			}
+		}else{
+			msg.reply.text("You don´t have enoth permissions to do this...");
+		}
+	})
+});
 
 setInterval(function(){
 	SW.Cache()
