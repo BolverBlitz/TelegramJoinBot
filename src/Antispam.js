@@ -16,6 +16,7 @@ let checkUserCAS = function (UserID) {
     return new Promise(function(resolve, reject) {
         request(`https://api.cas.chat/check?user_id=${UserID}`, { json: true }, (err, res, body) => {
             if (err) {
+                console.log(err)
                 let Out = {
                     antispam: "CAS",
                     state: "maybe",
@@ -41,6 +42,7 @@ let checkUserspamprotection = function (UserID) {
     return new Promise(function(resolve, reject) {
         customHeaderRequest(`https://api.intellivoid.net/spamprotection/v1/lookup?query=${UserID}`, { json: true }, (err, res, body) => {
             if (err) {
+                console.log(err)
                 let Out = {
                     antispam: "SpamProtection",
                     state: "maybe",
@@ -48,19 +50,24 @@ let checkUserspamprotection = function (UserID) {
                 }
                 resolve(Out);
             }else{
-                let Out = {
-                    antispam: "SpamProtection",
-                    state: body.results.attributes.is_potential_spammer,
-                }
-
-                if(body.results.attributes.blacklist_reason === null){
-                    var BlockReason = "AI BAN"
-                }
-
-                if(body.ok !== false){
-                    Out.timestamp = body.last_updated,
-                    Out.reason = BlockReason
+                if(body.success === true){
+                    var Out = {
+                        antispam: "SpamProtection",
+                        state: body.results.attributes.is_potential_spammer,
                     }
+
+                    if(body.results.attributes.blacklist_reason === null){
+                        Out.reason = body.results.attributes.blacklist_reason
+                    }else{
+                        Out.reason = "AI Ban"
+                    }
+                }else{
+                    var Out = {
+                        antispam: "SpamProtection",
+                        state: "maybe",
+                        reason: "404"
+                    }
+                }
                 resolve(Out);
             }
         });

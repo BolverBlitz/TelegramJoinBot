@@ -79,7 +79,6 @@ bot.on(/^\/check$/i, (msg) => {
 	//Promise.all([SW.getBan(UserID, 0),SW.getBan(UserID, 1), SW.getBan(UserID, 2), AntiSpam.checkUserCAS(UserID)]).then(function(PAll) {
 		let BanMSGState = "";
 		PAll.map(bool => {
-			console.log(bool)
 			if(bool.state === true){
 				if(bool.reason.startsWith("0x")){
 					BanMSGState += `\nReason ${bool.antispam}: ${ReasonsListFlip[bool.reason]}` //Flip back to human readable reason
