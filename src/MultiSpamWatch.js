@@ -21,8 +21,8 @@ async function Cache(){
         var IDListTemp = [];
         var Self;
         var TSelf;
-        IDListTemp = await SpamWatch.getBansMin().catch(function(error) {if(error.status === 429){console.log(`[bot.Spamwatch] Ratelimit for API: ${AntispamName}`)}else if(error.response.status === 503){console.log(`[bot.Spamwatch] System Offline: ${AntispamName}`)}else{console.log("Test")}})
-        var SSelf = await SpamWatch.getSelf().catch(function(error) {if(error.response.status === 503){console.log(`[bot.Spamwatch] System Offline: ${AntispamName}`);TSelf = {permission: "Offline", token: Token};}else{console.log("Test")}})
+        IDListTemp = await SpamWatch.getBansMin().catch(function(error) {if(error.status === 429){console.log(`[bot.Spamwatch] Ratelimit for API: ${AntispamName}`)}else if(error.response.status === 503){console.log(`[bot.Spamwatch] System Offline: ${AntispamName}`)}else{console.log(error)}})
+        var SSelf = await SpamWatch.getSelf().catch(function(error) {if(error.response.status === 503){console.log(`[bot.Spamwatch] System Offline: ${AntispamName}`);TSelf = {permission: "Offline", token: Token};}else{console.log(error)}})
         if(!SSelf){
             Self = TSelf;
         }else{
@@ -68,7 +68,13 @@ let getBan = async function(UserID, API_ID, cache) {
             if(cache === true){
                 if(BanCache[API_ID].IDList.includes(UserID)){
                     let SpamWatch = new SpamWatchAPI.Client(secret[Token], url);
-                    let ban = await SpamWatch.getBan(parseInt(UserID)).catch(error => f.Elog('Error: (delMessage)', error.description));;
+                    var banf
+                    var bans = await SpamWatch.getBan(parseInt(UserID)).catch(function(error) {if(error.response.status === 503){banf = {state: "maybe", antispam: AntispamName};}else{console.log(error)}})
+                    if(!bans){
+                        ban = banf;
+                    }else{
+                        ban = bans;
+                    }
                     if(ban === false){
                         ban = {state: false, antispam: AntispamName}
                     }else{
