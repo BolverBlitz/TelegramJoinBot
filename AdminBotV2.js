@@ -145,8 +145,13 @@ bot.on('newChatMembers', (msg) => {
 		});
 
 		if(StateIF === true){
+			let replyMarkup = bot.inlineKeyboard([
+				[
+					bot.inlineButton(i18n(config.language, "UnlockKnopf"), {callback: 'Unlock_' + UserID})
+				]
+			]);
 			var MSG = `${i18n(config.language, "AntispamBan", { Nutzername: nutzername })}${BanMSGState}`
-			bot.sendMessage(ChatID, MSG, {parseMode: 'markdown'}).catch(error => f.Elog('Error: (SendMessage)', error.description));
+			bot.sendMessage(ChatID, MSG, {parseMode: 'markdown', replyMarkup}).catch(error => f.Elog('Error: (SendMessage)', error.description));
 		}else{
 
 			var MSG = i18n(config.language, "Willkommen", { Nutzername: nutzername }) + "\n"
@@ -196,6 +201,26 @@ bot.on('callbackQuery', (msg) => {
 	var userID = msg.from.id.toString();
 	UserIDArray = userID.split('');
 	var data = msg.data.split("_")
+
+	if(data[0] === 'Unlock')
+	{
+		bot.getChatAdministrators(chatId).then(function(Admins) {
+			AdminArray = [];
+			for(i in Admins){
+				AdminArray.push(Admins[i].user.id)
+			}
+			if(AdminArray.includes(msg.from.id)){
+				bot.answerCallbackQuery(msg.id);
+				bot.restrictChatMember(chatId, data[1], {canSendMessages: true, canSendMediaMessages: true, cansendpolls: true, canSendOtherMessages: true, canAddWebPagePreviews: true})
+				bot.deleteMessage(chatId,messageId);
+			}else{
+				bot.answerCallbackQuery(msg.id,{
+					text: i18n(config.language, "NichtBenutzer"),
+					showAlert: true
+				});
+			}
+		});
+	}
 	
 	if(data[0] === 'K')
 	{
@@ -210,7 +235,25 @@ bot.on('callbackQuery', (msg) => {
 					bot.deleteMessage(chatId,messageId);
 					bot.restrictChatMember(chatId, userID, {canSendMessages: true, canSendMediaMessages: true, cansendpolls: true, canSendOtherMessages: true, canAddWebPagePreviews: true})
 				}else{
-					console.log("Failed")
+					let replyMarkup = bot.inlineKeyboard([
+						[
+							bot.inlineButton(i18n(config.language, "UnlockKnopf"), {callback: 'Unlock_' + data[2]})
+						]
+					]);
+
+					var MSG = `${i18n(config.language, "FalscherKnopf", { Nutzername: `${data[2]}` })}`
+
+					if ('inline_message_id' in msg) {
+						bot.editMessageText(
+							{inlineMsgId: inlineId}, MSG,
+							{parseMode: 'markdown', webPreview: false, replyMarkup}
+						).catch(error => console.log('Error:', error));
+					}else{
+						bot.editMessageText(
+							{chatId: chatId, messageId: messageId}, MSG,
+							{parseMode: 'markdown', webPreview: false, replyMarkup}
+						).catch(error => console.log('Error:', error));
+					}
 				}
 			}
 			if(Mitte.includes(UserIDArray[UserIDArray.length-1]))
@@ -220,7 +263,25 @@ bot.on('callbackQuery', (msg) => {
 					bot.deleteMessage(chatId,messageId);
 					bot.restrictChatMember(chatId, userID, {canSendMessages: true, canSendMediaMessages: true, cansendpolls: true, canSendOtherMessages: true, canAddWebPagePreviews: true})
 				}else{
-					console.log("Failed")
+					let replyMarkup = bot.inlineKeyboard([
+						[
+							bot.inlineButton(i18n(config.language, "UnlockKnopf"), {callback: 'Unlock_' + data[2]})
+						]
+					]);
+
+					var MSG = `${i18n(config.language, "FalscherKnopf", { Nutzername: `${data[2]}` })}`
+
+					if ('inline_message_id' in msg) {
+						bot.editMessageText(
+							{inlineMsgId: inlineId}, MSG,
+							{parseMode: 'markdown', webPreview: false, replyMarkup}
+						).catch(error => console.log('Error:', error));
+					}else{
+						bot.editMessageText(
+							{chatId: chatId, messageId: messageId}, MSG,
+							{parseMode: 'markdown', webPreview: false, replyMarkup}
+						).catch(error => console.log('Error:', error));
+					}
 				}
 			}
 			if(Rechts.includes(UserIDArray[UserIDArray.length-1]))
@@ -230,12 +291,48 @@ bot.on('callbackQuery', (msg) => {
 					bot.deleteMessage(chatId,messageId);
 					bot.restrictChatMember(chatId, userID, {canSendMessages: true, canSendMediaMessages: true, cansendpolls: true, canSendOtherMessages: true, canAddWebPagePreviews: true})
 				}else{
-					console.log("Failed")
+					let replyMarkup = bot.inlineKeyboard([
+						[
+							bot.inlineButton(i18n(config.language, "UnlockKnopf"), {callback: 'Unlock_' + data[2]})
+						]
+					]);
+
+					var MSG = `${i18n(config.language, "FalscherKnopf", { Nutzername: `${data[2]}` })}`
+
+					if ('inline_message_id' in msg) {
+						bot.editMessageText(
+							{inlineMsgId: inlineId}, MSG,
+							{parseMode: 'markdown', webPreview: false, replyMarkup}
+						).catch(error => console.log('Error:', error));
+					}else{
+						bot.editMessageText(
+							{chatId: chatId, messageId: messageId}, MSG,
+							{parseMode: 'markdown', webPreview: false, replyMarkup}
+						).catch(error => console.log('Error:', error));
+					}
 				}
 			}
 			if(config.rest === UserIDArray[UserIDArray.length-1])
 			{
-				console.log("Failed")
+				let replyMarkup = bot.inlineKeyboard([
+					[
+						bot.inlineButton(i18n(config.language, "UnlockKnopf"), {callback: 'Unlock_' + data[2]})
+					]
+				]);
+
+				var MSG = `${i18n(config.language, "FalscherKnopf", { Nutzername: `${data[2]}` })}`
+
+				if ('inline_message_id' in msg) {
+					bot.editMessageText(
+						{inlineMsgId: inlineId}, MSG,
+						{parseMode: 'markdown', webPreview: false, replyMarkup}
+					).catch(error => console.log('Error:', error));
+				}else{
+					bot.editMessageText(
+						{chatId: chatId, messageId: messageId}, MSG,
+						{parseMode: 'markdown', webPreview: false, replyMarkup}
+					).catch(error => console.log('Error:', error));
+				}
 			}
 
 		}else{

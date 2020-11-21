@@ -14,7 +14,7 @@ var customHeaderRequest = request.defaults({
 let checkUserCAS = function (UserID) {
     //UserID = 1205278547;
     return new Promise(function(resolve, reject) {
-        request(`https://apis.cas.chat/check?user_id=${UserID}`, { json: true }, (err, res, body) => {
+        request(`https://api.cas.chat/check?user_id=${UserID}`, { json: true }, (err, res, body) => {
             if (err) {
                 let Out = {
                     antispam: "CAS",
@@ -39,7 +39,7 @@ let checkUserCAS = function (UserID) {
 
 let checkUserspamprotection = function (UserID) {
     return new Promise(function(resolve, reject) {
-        customHeaderRequest(`https://apis.intellivoid.net/spamprotection/v1/lookup?query=${UserID}`, { json: true }, (err, res, body) => {
+        customHeaderRequest(`https://api.intellivoid.net/spamprotection/v1/lookup?query=${UserID}`, { json: true }, (err, res, body) => {
             if (err) {
                 let Out = {
                     antispam: "SpamProtection",
