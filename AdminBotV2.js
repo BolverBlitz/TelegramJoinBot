@@ -992,11 +992,14 @@ bot.on(/^\/gban( .+)*$/i, (msg, props) => {
 			if(typeof(Para) === 'undefined'){
 				msg.reply.text("You need to specify a new permissions level");
 			}else{
-
-				SW.addBan(msg.reply_to_message.text, 2, Para).then(function(addBan){
-					console.log(addBan)
-					bot.deleteMessage(msg.chat.id, msg.message_id);
-				})
+				if(typeof(msg.reply_to_message.text) === 'undefined'){
+					msg.reply.text("You must Reply at a user ID and type /gban reason");
+				}else{
+					SW.addBan(msg.reply_to_message.text, 2, Para).then(function(addBan){
+						console.log(addBan)
+						bot.deleteMessage(msg.chat.id, msg.message_id);
+					})
+				}
 			}
 		}else{
 			msg.reply.text("You don´t have enoth permissions to do this...");
