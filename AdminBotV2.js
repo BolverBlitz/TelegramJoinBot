@@ -15,7 +15,7 @@ const perms = require("./src/Permissions");
 //Include some modules
 
 const newI18n = require("new-i18n");
-const i18n = newI18n(__dirname + "/languages", ["de"], "de");
+const i18n = newI18n(__dirname + "/languages", ["de","en"], "de");
 
 //Include complex modules
 const Telebot = require('telebot');
