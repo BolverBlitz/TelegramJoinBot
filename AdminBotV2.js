@@ -987,18 +987,22 @@ bot.on(/^\/mytokens/i, (msg) => {
 bot.on(/^\/gban( .+)*$/i, (msg, props) => {
 	perms.permissions(msg.from.id).then(function(Permissions) {
 		if(Permissions >= permsJson.Admin || msg.from.id === Number(config.isSuperAdmin)){
-			var Para = props.match[1].trim();
-			if(typeof(Para) === 'undefined'){
-				msg.reply.text("You need to specify a new permissions level");
+			let CheckAtributes = AtrbutCheck(props);
+			if(!CheckAtributes.hasAtributes){
+				msg.reply.text("You need to supply Arguments");
 			}else{
-				if(typeof(msg.reply_to_message.text) === 'undefined'){
-					msg.reply.text("You must Reply at a user ID and type /gban reason");
+				if(CheckAtributes.atributes.length > 1){
+					var BanGrund;
+					for(var i = 1; i < CheckAtributes.atributes.length;i++){
+						BanGrund = BanGrund + " " + CheckAtributes.atributes[i];
+					}
 				}else{
-					SW.addBan(msg.reply_to_message.text, 2, Para).then(function(addBan){
-						console.log(addBan)
-						bot.deleteMessage(msg.chat.id, msg.message_id);
-					})
+					var BanGrund = "No reason was given."
 				}
+				SW.addBan(CheckAtributes.atributes[0], 2, BanGrund).then(function(addBan){
+					bot.deleteMessage(msg.chat.id, msg.message_id);
+					msg.reply.text(`User: ${CheckAtributes.atributes[0]} was banned for ${BanGrund}`);
+				})
 			}
 		}else{
 			msg.reply.text("You don´t have enoth permissions to do this...");
@@ -1009,3 +1013,29 @@ bot.on(/^\/gban( .+)*$/i, (msg, props) => {
 setInterval(function(){
 	SW.Cache()
 }, 301000);
+
+function AtrbutCheck(props) {
+	let input = props.match.input.split(' ')
+	if(input[0].endsWith(process.env.Telegram_Bot_Botname)){
+		let atributesWName = [];
+		for(let i=1; i <= input.length - 1; i++){
+			atributesWName.push(input[i])
+		}
+		if(atributesWName.length >= 1){
+			return {hasAtributes: true, atributes: atributesWName}
+		}else{
+			return {hasAtributes: false}
+		}
+	}else{
+		if(typeof(props.match[1]) === 'undefined'){
+			return {hasAtributes: false}
+		}else{
+			let atributeOName = [];
+			let input = props.match[1].split(' ')
+			for(let i=1; i <= input.length - 1; i++){
+				atributeOName.push(input[i])
+			}
+			return {hasAtributes: true, atributes: atributeOName}
+		}
+	}
+}
