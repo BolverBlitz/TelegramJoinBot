@@ -1012,7 +1012,7 @@ bot.on(/^\/gban( .+)*$/i, (msg, props) => {
 
 setInterval(function(){
 	SW.Cache()
-}, 301000);
+}, 36000);
 
 function AtrbutCheck(props) {
 	let input = props.match.input.split(' ')
