@@ -1000,7 +1000,7 @@ bot.on(/^\/gban( .+)*$/i, (msg, props) => {
 					var BanGrund = "No reason was given."
 				}
 				SW.addBan(CheckAtributes.atributes[0], 2, BanGrund).then(function(addBan){
-					bot.deleteMessage(msg.chat.id, msg.message_id);
+					//bot.deleteMessage(msg.chat.id, msg.message_id);
 					msg.reply.text(`User: ${CheckAtributes.atributes[0]} was banned for ${BanGrund}`);
 				})
 			}
