@@ -992,7 +992,7 @@ bot.on(/^\/gban( .+)*$/i, (msg, props) => {
 				msg.reply.text("You need to supply Arguments");
 			}else{
 				if(CheckAtributes.atributes.length > 1){
-					var BanGrund;
+					var BanGrund = "";
 					for(var i = 1; i < CheckAtributes.atributes.length;i++){
 						BanGrund = BanGrund + " " + CheckAtributes.atributes[i];
 					}
