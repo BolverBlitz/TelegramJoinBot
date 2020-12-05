@@ -451,7 +451,7 @@ bot.on('callbackQuery', (msg) => {
 			}
 			if(data[1] === 'check')
 			{
-				Promise.all([SW.getBan(data[3], 0),SW.getBan(data[3], 1), SW.getBan(data[3], 2), AntiSpam.checkUserCAS(data[3])]).then(function(PAll) {
+				Promise.all([SW.getBan(data[3], 0),SW.getBan(data[3], 1), SW.getBan(data[3], 2), AntiSpam.checkUserCAS(data[3]), AntiSpam.checkUserspamprotection(data[3])]).then(function(PAll) {
 					let BanMSGState = "";
 					PAll.map(bool => {
 						if(bool.state === true){
@@ -463,7 +463,7 @@ bot.on('callbackQuery', (msg) => {
 						}
 					});
 					
-					let MSG = i18n(config.language, "AntiSpamCheck", { Nutzername: data[4], Spamwatch: f.ConvertBoolToEmoji(PAll[0].state), EBGWatch: f.ConvertBoolToEmoji(PAll[1].state), BolverWatch: f.ConvertBoolToEmoji(PAll[2].state), CAS:f.ConvertBoolToEmoji(PAll[3].state) }) + BanMSGState
+					let MSG = i18n(config.language, "AntiSpamCheck", { Nutzername: data[4], Spamwatch: f.ConvertBoolToEmoji(PAll[0].state), EBGWatch: f.ConvertBoolToEmoji(PAll[1].state), BolverWatch: f.ConvertBoolToEmoji(PAll[2].state), CAS:f.ConvertBoolToEmoji(PAll[3].state), spamprotection: f.ConvertBoolToEmoji(PAll[4].state)}) + BanMSGState
 
 					let replyMarkup = bot.inlineKeyboard([
 						[
