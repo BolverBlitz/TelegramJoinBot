@@ -38,6 +38,39 @@ let checkUserCAS = function (UserID) {
     });
 };
 
+let checkSpamblockers = function (UserID) {
+    //1673603685
+    return new Promise(function(resolve, reject) {
+        request(`https://spamblockers.bolverblitz.eu/user/${UserID}`, { json: true }, (err, res, body) => {
+            if (err) {
+                console.log(err)
+                let Out = {
+                    antispam: "SpamBlockers",
+                    state: "maybe",
+                    reason: "System Offline"
+                }
+                resolve(Out);
+            }else{
+                if (body.user != null){
+                    let Out = {
+                        antispam: "SpamBlockers",
+                        state: true,
+                        reason: body.user.reason
+                    }
+                    resolve(Out);
+                }else{
+                    let Out = {
+                        antispam: "SpamBlockers",
+                        state: false,
+                        reason: "Not Banned"
+                    }
+                    resolve(Out);
+                }
+            }
+        });
+    });
+};
+
 let checkUserspamprotection = function (UserID) {
     return new Promise(function(resolve, reject) {
         customHeaderRequest(`https://api.intellivoid.net/spamprotection/v1/lookup?query=${UserID}`, { json: true }, (err, res, body) => {
@@ -76,5 +109,6 @@ let checkUserspamprotection = function (UserID) {
 
 module.exports = {
     checkUserCAS,
+    checkSpamblockers,
     checkUserspamprotection
 };

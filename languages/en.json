@@ -12,7 +12,7 @@
 	"WillkommenError":"Welcome to the Chat, {{Nutzername}}.\nUnfortunatly i dont have rights to mute you.",
 	"NichtBenutzer":"Thats not your Button! \nSTOP TOUCHING ME!",
 	"AntispamBan":"Welcome to the Chat, {{Nutzername}}.\nSince you are banned in at least one AntiSpam Network you are not allowed to unmute yourself.\n",
-	"AntiSpamCheck":"Antispam Status for {{Nutzername}}\n{{Spamwatch}} SpamWatch\n{{EBGWatch}} EBGWatch\n{{BolverWatch}} BolverWatch\n{{CAS}} CAS Ban\n{{spamprotection}} SpamProtection\n",
+	"AntiSpamCheck":"Antispam Status for {{Nutzername}}\n{{Spamwatch}} SpamWatch\n{{EBGWatch}} EBGWatch\n{{BolverWatch}} BolverWatch\n{{CAS}} CAS Ban\n{{spamprotection}} SpamProtection\n{{Spamblockers}} SpamBlockers\n",
 	"NichtGenugRechte":"You are not allowed to do this",
 	"FalscherKnopf":"{{Nutzername}} was not able to unmute themselfes.",
 	"UnlockKnopf":"Admin unmute."
