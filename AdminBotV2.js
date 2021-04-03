@@ -698,7 +698,7 @@ bot.on('callbackQuery', (msg) => {
 				}
 				Promise.all(Promises).then(function(Tokens){
 					console.log(Tokens)
-					let MSG = `All Tokens for User ${data[4]}(${data[3]}) where deleted!`
+					let MSG = `All Tokens for User ${data[4]}(${data[3]}) were deleted!`
 
 					let replyMarkup = bot.inlineKeyboard([
 						[
